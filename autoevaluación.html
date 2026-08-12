@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Autoevaluación Previa – Presentaciones Poderosas</title>
+<style>
+:root {
+  --pri: #1a3a5c;
+  --acc: #e8a020;
+  --acc2: #2e86ab;
+  --bg: #f0f4f8;
+  --card: #fff;
+  --txt: #1e293b;
+  --mut: #64748b;
+  --bdr: #e2e8f0;
+  --rad: 14px;
+  --sh: 0 2px 10px rgba(0,0,0,0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--txt); min-height: 100vh; }
+
+#copyBar { position: sticky; top: 0; z-index: 999; background: #0f2744; padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+#copyBar span { color: rgba(255,255,255,0.7); font-size: 11px; }
+#copyBtn { background: var(--acc); color: white; border: none; border-radius: 8px; padding: 7px 14px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+#copyMsg { color: #4ade80; font-size: 11px; font-weight: 600; display: none; }
+
+.hdr { background: var(--pri); color: white; padding: 20px 20px 14px; text-align: center; }
+.hdr .brand { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; opacity: 0.6; margin-bottom: 4px; }
+.hdr h1 { font-size: 19px; font-weight: 800; }
+.hdr .tag { display: inline-block; background: var(--acc); color: white; font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 12px; margin-top: 8px; }
+.hdr p { font-size: 12px; opacity: 0.7; margin-top: 8px; line-height: 1.5; }
+.prog { height: 5px; background: rgba(255,255,255,0.15); }
+.prog-fill { height: 100%; background: var(--acc); width: 0%; transition: width 0.3s; }
+
+.wrap { max-width: 540px; margin: 0 auto; padding: 14px 14px 30px; }
+.card { background: var(--card); border-radius: var(--rad); margin-bottom: 12px; box-shadow: var(--sh); overflow: hidden; }
+
+.intro { padding: 14px; font-size: 13px; color: var(--mut); line-height: 1.6; border-left: 4px solid var(--acc); }
+.intro strong { color: var(--pri); }
+
+.names { padding: 14px; }
+.names .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.names label { font-size: 11px; font-weight: 700; color: var(--mut); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 5px; }
+.names input, .names select { width: 100%; border: 1.5px solid var(--bdr); border-radius: 8px; padding: 9px 11px; font-size: 15px; outline: none; color: var(--txt); background: white; font-family: inherit; }
+.names input:focus, .names select:focus { border-color: var(--acc2); }
+.names .full { margin-top: 12px; }
+
+.sec-hdr { padding: 10px 14px; display: flex; align-items: center; gap: 9px; background: var(--pri); }
+.sec-hdr.sub { background: #f8f3e6; border-bottom: 1px solid var(--bdr); }
+.sec-hdr .ico { font-size: 17px; }
+.sec-hdr .lbl { font-size: 13px; font-weight: 700; color: white; }
+.sec-hdr.sub .lbl { color: #92600a; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+
+.item { padding: 9px 14px; border-bottom: 1px solid var(--bdr); }
+.item:last-child { border-bottom: none; }
+.item-txt { font-size: 13px; color: var(--txt); margin-bottom: 7px; line-height: 1.4; }
+.btns { display: flex; gap: 6px; }
+.rb { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--bdr); background: white; font-size: 14px; font-weight: 700; color: var(--mut); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; -webkit-tap-highlight-color: transparent; }
+.rb.on { border-color: var(--acc); background: var(--acc); color: white; transform: scale(1.08); }
+.rb:active { transform: scale(0.93); }
+
+.chips { padding: 12px 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { padding: 7px 13px; border-radius: 20px; border: 2px solid var(--bdr); background: white; font-size: 12px; font-weight: 600; color: var(--mut); cursor: pointer; transition: all 0.15s; -webkit-tap-highlight-color: transparent; }
+.chip.on { border-color: var(--acc2); background: var(--acc2); color: white; }
+
+.reco-area { padding: 12px 14px; }
+.reco-area textarea { width: 100%; border: 1.5px solid var(--bdr); border-radius: 10px; padding: 10px 12px; font-size: 14px; font-family: inherit; color: var(--txt); resize: none; min-height: 80px; outline: none; }
+.reco-area textarea:focus { border-color: var(--acc2); }
+
+.val-msg { background: #fffbeb; border: 1.5px solid #fcd34d; border-radius: 10px; padding: 10px 14px; font-size: 13px; color: #92400e; margin-bottom: 12px; display: none; }
+.val-msg.show { display: block; }
+
+.calc-btn { width: 100%; padding: 15px; background: var(--pri); color: white; border: none; border-radius: var(--rad); font-size: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 14px rgba(26,58,92,0.35); -webkit-tap-highlight-color: transparent; }
+.calc-btn:active { transform: scale(0.98); }
+
+/* RESULTADOS */
+.res { display: none; }
+.res-hdr { background: var(--pri); color: white; padding: 22px 20px; text-align: center; }
+.res-hdr h2 { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+.res-hdr p { font-size: 12px; opacity: 0.75; }
+.score-big { font-size: 46px; font-weight: 800; color: var(--acc); line-height: 1; margin: 10px 0 2px; }
+.score-lbl { font-size: 11px; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px; }
+
+.bar-row { padding: 11px 14px; border-bottom: 1px solid var(--bdr); }
+.bar-row:last-child { border-bottom: none; }
+.bar-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.bar-name { font-size: 13px; font-weight: 700; color: var(--pri); }
+.bar-val { font-size: 13px; font-weight: 800; color: var(--acc); }
+.bar-track { height: 9px; background: var(--bdr); border-radius: 6px; overflow: hidden; }
+.bar-fill { height: 100%; background: linear-gradient(90deg, var(--acc2), var(--acc)); border-radius: 6px; transition: width 0.6s ease; }
+
+.insight { padding: 14px; font-size: 13px; line-height: 1.6; }
+.insight .row2 { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px; }
+.insight .row2:last-child { margin-bottom: 0; }
+.insight .em { font-size: 20px; flex-shrink: 0; }
+.insight b { color: var(--pri); }
+
+.send-btn { width: 100%; padding: 15px; background: #25D366; color: white; border: none; border-radius: var(--rad); font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 14px rgba(37,211,102,0.4); -webkit-tap-highlight-color: transparent; margin-bottom: 10px; }
+.send-btn:active { transform: scale(0.98); }
+.send-btn svg { width: 22px; height: 22px; fill: white; flex-shrink: 0; }
+.back-btn { width: 100%; padding: 11px; background: transparent; color: var(--mut); border: 1.5px solid var(--bdr); border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div id="copyBar">
+  <span>⬇️ Para guardar el archivo HTML:</span>
+  <button id="copyBtn">📋 Copiar código</button>
+  <span id="copyMsg">✅ ¡Copiado!</span>
+</div>
+
+<!-- FORMULARIO -->
+<div id="mainForm">
+  <div class="hdr">
+    <div class="brand">Integrando</div>
+    <h1>Presentaciones Poderosas</h1>
+    <div class="tag">Autoevaluación previa</div>
+    <p>Escala: 1 = Casi nunca lo hago &nbsp;·&nbsp; 5 = Lo hago consistentemente</p>
+  </div>
+  <div class="prog"><div class="prog-fill" id="pFill"></div></div>
+
+  <div class="wrap">
+
+    <div class="card">
+      <div class="intro">
+        Antes de iniciar el entrenamiento, tómate <strong>5 minutos</strong> para evaluarte con honestidad. No hay respuestas correctas ni incorrectas: entre más real sea tu autoevaluación, <strong>más provecho sacarás de la sesión</strong>. Al final verás tu perfil personal.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="names">
+        <div class="row">
+          <div>
+            <label>Tu nombre</label>
+            <input type="text" id="fNombre" placeholder="Nombre completo" autocomplete="off">
+          </div>
+          <div>
+            <label>Área / Puesto</label>
+            <input type="text" id="fArea" placeholder="Opcional" autocomplete="off">
+          </div>
+        </div>
+        <div class="full">
+          <label>¿Con qué frecuencia presentas ante un grupo?</label>
+          <select id="fFrec">
+            <option value="">Selecciona una opción</option>
+            <option>Casi nunca</option>
+            <option>Algunas veces al año</option>
+            <option>Una o dos veces al mes</option>
+            <option>Cada semana</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESTRUCTURA -->
+    <div class="card">
+      <div class="sec-hdr" style="background:#2e5f8a"><span class="ico">🧩</span><span class="lbl">Estructura y Preparación</span></div>
+      <div id="grp-estructura"></div>
+    </div>
+
+    <!-- PRESENCIA -->
+    <div class="card">
+      <div class="sec-hdr"><span class="ico">🎯</span><span class="lbl">Presencia</span></div>
+      <div id="grp-presencia"></div>
+    </div>
+
+    <!-- ATENCIÓN -->
+    <div class="card">
+      <div class="sec-hdr"><span class="ico">👁️</span><span class="lbl">Atención</span></div>
+      <div class="sec-hdr sub"><span class="lbl">Voz</span></div>
+      <div id="grp-voz"></div>
+      <div class="sec-hdr sub"><span class="lbl">Postura y Movimiento</span></div>
+      <div id="grp-postura"></div>
+      <div class="sec-hdr sub"><span class="lbl">Lenguaje</span></div>
+      <div id="grp-lenguaje"></div>
+      <div class="sec-hdr sub"><span class="lbl">Contacto Visual</span></div>
+      <div id="grp-visual"></div>
+    </div>
+
+    <!-- MOTIVACIÓN -->
+    <div class="card">
+      <div class="sec-hdr"><span class="ico">⚡</span><span class="lbl">Motivación e Impacto</span></div>
+      <div id="grp-motivacion"></div>
+    </div>
+
+    <!-- RETO -->
+    <div class="card">
+      <div class="sec-hdr" style="background:#2e86ab"><span class="ico">🚧</span><span class="lbl">Mi mayor reto al presentar es…</span></div>
+      <div class="chips" id="chipArea"></div>
+    </div>
+
+    <!-- EXPECTATIVA -->
+    <div class="card">
+      <div class="sec-hdr" style="background:#3d5a80"><span class="ico">🎁</span><span class="lbl">¿Qué quieres lograr con este entrenamiento?</span></div>
+      <div class="reco-area">
+        <textarea id="fExpectativa" placeholder="Si al terminar el entrenamiento lograras UNA sola cosa, ¿cuál sería?"></textarea>
+      </div>
+    </div>
+
+    <div class="val-msg" id="valMsg">⚠️ Escribe tu nombre y califica todos los criterios antes de continuar.</div>
+
+    <button class="calc-btn" id="calcBtn">Ver mi perfil →</button>
+
+  </div>
+</div>
+
+<!-- RESULTADOS -->
+<div class="res" id="resScreen">
+  <div class="res-hdr">
+    <div class="brand" style="font-size:10px;letter-spacing:3px;text-transform:uppercase;opacity:0.6">Integrando</div>
+    <h2 id="rName">Tu perfil</h2>
+    <div class="score-big" id="rGlobal">0.0</div>
+    <div class="score-lbl">Promedio general / 5</div>
+  </div>
+
+  <div class="wrap">
+
+    <div class="card">
+      <div class="sec-hdr"><span class="ico">📊</span><span class="lbl">Tu perfil por dimensión</span></div>
+      <div id="barArea"></div>
+    </div>
+
+    <div class="card">
+      <div class="sec-hdr" style="background:#2e86ab"><span class="ico">💡</span><span class="lbl">Lo que dice tu autoevaluación</span></div>
+      <div class="insight" id="insightArea"></div>
+    </div>
+
+    <button class="send-btn" id="sendBtn">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.564 4.14 1.546 5.876L.057 23.886a.75.75 0 0 0 .918.919l6.168-1.476A11.943 11.943 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.714 9.714 0 0 1-4.964-1.362l-.356-.212-3.676.88.897-3.57-.233-.368A9.72 9.72 0 0 1 2.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/></svg>
+      Enviar mi autoevaluación
+    </button>
+    <button class="back-btn" id="backBtn">← Volver y ajustar respuestas</button>
+
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIGURACIÓN — Escribe aquí el número del facilitador
+   Formato: código de país + número, SIN espacios ni signos.
+   Ejemplo México: "5215512345678"
+   Si lo dejas vacío, el participante elegirá el contacto.
+   ============================================================ */
+var TELEFONO_FACILITADOR = "";
+
+var DATA = {
+  estructura: [
+    "Defino con claridad el objetivo antes de preparar mi presentación",
+    "Organizo mis ideas en una estructura lógica (apertura, desarrollo, cierre)",
+    "Adapto el contenido al perfil e intereses de mi audiencia",
+    "Preparo una apertura que capta la atención desde el inicio",
+    "Cierro con un mensaje memorable y una llamada a la acción",
+    "Diseño apoyos visuales que refuerzan y no compiten con mi mensaje"
+  ],
+  presencia: [
+    "Me percibo como un presentador seguro",
+    "Genero confianza ante el grupo",
+    "Me mantengo conectado con el grupo durante mi presentación",
+    "Presento con energía y seguridad",
+    "Controlo mis nervios adecuadamente"
+  ],
+  voz: [
+    "Manejo un volumen adecuado",
+    "Me percibo como un presentador fluido",
+    "Evito la monotonía modulando mi voz",
+    "Vocalizo y hablo claramente",
+    "Utilizo pausas para lograr mayor impacto"
+  ],
+  postura: [
+    "Mantengo una postura que comunica seguridad",
+    "Me paro erguido y bien plantado",
+    "Evito movimientos que distraen a la audiencia",
+    "Me muevo por el escenario adecuadamente",
+    "Utilizo mis manos para reforzar mi comunicación"
+  ],
+  lenguaje: [
+    "Me comunico de manera clara y profesional",
+    "Utilizo el lenguaje apropiado para la audiencia",
+    "Demuestro estar convencido del tema que presento"
+  ],
+  visual: [
+    "Hago contacto visual con todas las personas del grupo",
+    "Miro a los ojos de manera natural",
+    "Mi mirada se focaliza principalmente en la audiencia"
+  ],
+  motivacion: [
+    "Inspiro confianza",
+    "Convenzo con mis argumentos"
+  ]
+};
+
+var NOMBRES = {
+  estructura: "Estructura y Preparación",
+  presencia: "Presencia",
+  voz: "Voz",
+  postura: "Postura y Movimiento",
+  lenguaje: "Lenguaje",
+  visual: "Contacto Visual",
+  motivacion: "Motivación e Impacto"
+};
+
+var ORDEN = ["estructura","presencia","voz","postura","lenguaje","visual","motivacion"];
+
+var CHIPS = ["Los nervios","Estructurar el contenido","Captar la atención","Manejar preguntas difíciles",
+             "El uso de la voz","El lenguaje corporal","Sintetizar mis ideas","Manejar el tiempo"];
+
+var scores = {};
+var chipSel = "";
+
+function buildGroup(groupId, key) {
+  var el = document.getElementById(groupId);
+  DATA[key].forEach(function(txt, i) {
+    var id = key + "_" + i;
+    scores[id] = 0;
+    var div = document.createElement("div");
+    div.className = "item";
+    var p = document.createElement("div");
+    p.className = "item-txt";
+    p.textContent = txt;
+    div.appendChild(p);
+    var btns = document.createElement("div");
+    btns.className = "btns";
+    btns.id = "btns_" + id;
+    for (var v = 1; v <= 5; v++) {
+      (function(val) {
+        var b = document.createElement("button");
+        b.className = "rb";
+        b.textContent = val;
+        b.onclick = function() { pick(id, val); };
+        btns.appendChild(b);
+      })(v);
+    }
+    div.appendChild(btns);
+    el.appendChild(div);
+  });
+}
+
+function pick(id, val) {
+  scores[id] = val;
+  var btns = document.getElementById("btns_" + id).querySelectorAll(".rb");
+  btns.forEach(function(b, i) { b.classList.toggle("on", i + 1 === val); });
+  updateProg();
+}
+
+function updateProg() {
+  var total = Object.keys(scores).length;
+  var filled = Object.values(scores).filter(function(v) { return v > 0; }).length;
+  document.getElementById("pFill").style.width = (filled / total * 100) + "%";
+}
+
+function buildChips() {
+  var area = document.getElementById("chipArea");
+  CHIPS.forEach(function(c) {
+    var b = document.createElement("button");
+    b.className = "chip";
+    b.textContent = c;
+    b.onclick = function() {
+      chipSel = c;
+      area.querySelectorAll(".chip").forEach(function(x) { x.classList.remove("on"); });
+      b.classList.add("on");
+    };
+    area.appendChild(b);
+  });
+}
+
+function avg(key) {
+  var keys = Object.keys(scores).filter(function(k) { return k.indexOf(key + "_") === 0; });
+  var sum = keys.reduce(function(a, k) { return a + scores[k]; }, 0);
+  return (sum / keys.length).toFixed(1);
+}
+
+function avgGlobal() {
+  var vals = Object.values(scores);
+  var sum = vals.reduce(function(a, b) { return a + b; }, 0);
+  return (sum / vals.length).toFixed(1);
+}
+
+function stars(n) {
+  var f = parseFloat(n);
+  if (f >= 4.5) return "★★★★★";
+  if (f >= 3.5) return "★★★★☆";
+  if (f >= 2.5) return "★★★☆☆";
+  if (f >= 1.5) return "★★☆☆☆";
+  return "★☆☆☆☆";
+}
+
+function showVal() {
+  var m = document.getElementById("valMsg");
+  m.classList.add("show");
+  m.scrollIntoView({ behavior: "smooth", block: "center" });
+  setTimeout(function() { m.classList.remove("show"); }, 4000);
+}
+
+/* CALCULAR PERFIL */
+document.getElementById("calcBtn").onclick = function() {
+  var nom = document.getElementById("fNombre").value.trim();
+  if (!nom) { showVal(); return; }
+  if (!Object.values(scores).every(function(v) { return v > 0; })) { showVal(); return; }
+
+  document.getElementById("rName").textContent = nom;
+  document.getElementById("rGlobal").textContent = avgGlobal();
+
+  // Barras
+  var barArea = document.getElementById("barArea");
+  barArea.innerHTML = "";
+  var lista = ORDEN.map(function(k) { return { key: k, val: parseFloat(avg(k)) }; });
+
+  lista.forEach(function(o) {
+    var row = document.createElement("div");
+    row.className = "bar-row";
+    row.innerHTML =
+      '<div class="bar-top"><span class="bar-name">' + NOMBRES[o.key] + '</span>' +
+      '<span class="bar-val">' + o.val.toFixed(1) + '</span></div>' +
+      '<div class="bar-track"><div class="bar-fill" style="width:' + (o.val / 5 * 100) + '%"></div></div>';
+    barArea.appendChild(row);
+  });
+
+  // Insights
+  var orden = lista.slice().sort(function(a, b) { return b.val - a.val; });
+  var top = orden[0];
+  var low = orden[orden.length - 1];
+  var g = parseFloat(avgGlobal());
+
+  var lectura;
+  if (g >= 4.3) lectura = "Te percibes como un presentador sólido. El entrenamiento te servirá para <b>afinar detalles</b> y ganar impacto en los momentos de alta exigencia.";
+  else if (g >= 3.5) lectura = "Tienes una base firme y consciente. El mayor salto vendrá de <b>practicar deliberadamente</b> las áreas que hoy están por debajo de tu promedio.";
+  else if (g >= 2.5) lectura = "Reconoces con honestidad dónde estás. Ese es el mejor punto de partida: hay <b>mucho terreno de mejora rápida</b> con las herramientas correctas.";
+  else lectura = "Tu autoevaluación refleja que presentar aún te representa un reto importante. Es exactamente para eso que existe este entrenamiento: <b>vas a avanzar mucho</b>.";
+
+  document.getElementById("insightArea").innerHTML =
+    '<div class="row2"><span class="em">💪</span><div><b>Tu fortaleza:</b> ' + NOMBRES[top.key] + ' (' + top.val.toFixed(1) + '/5). Apóyate en esto durante la sesión.</div></div>' +
+    '<div class="row2"><span class="em">🎯</span><div><b>Tu área de oportunidad:</b> ' + NOMBRES[low.key] + ' (' + low.val.toFixed(1) + '/5). Pon atención especial a este bloque.</div></div>' +
+    '<div class="row2"><span class="em">📌</span><div>' + lectura + '</div></div>';
+
+  document.getElementById("mainForm").style.display = "none";
+  document.getElementById("resScreen").style.display = "block";
+  window.scrollTo(0, 0);
+};
+
+/* VOLVER */
+document.getElementById("backBtn").onclick = function() {
+  document.getElementById("resScreen").style.display = "none";
+  document.getElementById("mainForm").style.display = "block";
+  window.scrollTo(0, 0);
+};
+
+/* ENVIAR */
+document.getElementById("sendBtn").onclick = function() {
+  var nom  = document.getElementById("fNombre").value.trim();
+  var area = document.getElementById("fArea").value.trim() || "No especificada";
+  var frec = document.getElementById("fFrec").value || "No especificada";
+  var exp  = document.getElementById("fExpectativa").value.trim() || "No especificada";
+
+  var lista = ORDEN.map(function(k) { return { key: k, val: parseFloat(avg(k)) }; });
+  var orden = lista.slice().sort(function(a, b) { return b.val - a.val; });
+
+  var bloque = "";
+  ORDEN.forEach(function(k) {
+    var v = avg(k);
+    bloque += "*" + NOMBRES[k].toUpperCase() + "*\n" + stars(v) + "  " + v + " / 5\n\n";
+  });
+
+  var linea = "\u2015\u2015\u2015\u2015\u2015\u2015\u2015\u2015\u2015\u2015\u2015\u2015\u2015\u2015\u2015\u2015\u2015\n";
+
+  var msg =
+    "\uD83D\uDCCB *AUTOEVALUACI\u00D3N PREVIA*\n" +
+    "*Presentaciones Poderosas \u2013 Integrando*\n\n" +
+    "\uD83D\uDC64 *Participante:* " + nom + "\n" +
+    "\uD83C\uDFE2 *\u00C1rea / Puesto:* " + area + "\n" +
+    "\uD83D\uDCC5 *Frecuencia al presentar:* " + frec + "\n\n" +
+    linea + "\n" +
+    "\u2B50 *PROMEDIO GENERAL:* " + avgGlobal() + " / 5\n\n" +
+    bloque +
+    linea +
+    "\uD83D\uDCAA *Fortaleza:* " + NOMBRES[orden[0].key] + " (" + orden[0].val.toFixed(1) + ")\n" +
+    "\uD83C\uDFAF *\u00C1rea de oportunidad:* " + NOMBRES[orden[orden.length-1].key] + " (" + orden[orden.length-1].val.toFixed(1) + ")\n\n" +
+    "\uD83D\uDEA7 *Mayor reto al presentar:*\n" + (chipSel || "No indicado") + "\n\n" +
+    "\uD83C\uDF81 *Lo que quiere lograr:*\n" + exp + "\n\n" +
+    "_Autoevaluaci\u00F3n previa al entrenamiento \u00B7 Integrando_";
+
+  var base = TELEFONO_FACILITADOR
+    ? "https://wa.me/" + TELEFONO_FACILITADOR + "?text="
+    : "https://wa.me/?text=";
+
+  window.open(base + encodeURIComponent(msg), "_blank");
+};
+
+/* COPIAR CÓDIGO */
+document.getElementById("copyBtn").onclick = function() {
+  var html = document.documentElement.outerHTML;
+  navigator.clipboard.writeText(html).then(function() {
+    document.getElementById("copyMsg").style.display = "inline";
+    setTimeout(function() { document.getElementById("copyMsg").style.display = "none"; }, 3000);
+  }).catch(function() {
+    alert("Tu navegador no permitió copiar automáticamente. Usa Ctrl+U para ver el código fuente y cópialo manualmente.");
+  });
+};
+
+/* INIT */
+buildGroup("grp-estructura", "estructura");
+buildGroup("grp-presencia", "presencia");
+buildGroup("grp-voz", "voz");
+buildGroup("grp-postura", "postura");
+buildGroup("grp-lenguaje", "lenguaje");
+buildGroup("grp-visual", "visual");
+buildGroup("grp-motivacion", "motivacion");
+buildChips();
+</script>
+</body>
+</html>
